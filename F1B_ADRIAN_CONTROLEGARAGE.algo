@@ -1,0 +1,287 @@
+//
+Fonciton présentes : Creer voiture, creer garage, valider les saisies, associations
+Fonction absentes  : Affichage (tous.), recherche de vehicules.
+
+BUT: Organiser des voitures en fontins de garages
+ENTREE:Des voitures et des garages
+SORTIE:Des voitures couplées avec des garages.
+//
+
+CONST
+
+ANNEE <- anneeaujourdhui()
+
+TYPE typemarque = (kobold,fard,leo,raiden,generic)
+
+TYPE typeenergie = (essence,diesel,gpl,hybride,electrique)
+
+TYPE adresse = enregistrement
+
+    numero      :ENTIER
+    voie        :CHAINE
+    CP          :ENTIER
+    ville       :CHAINE
+    pays        :CHAINE
+    tel         :CHAINE
+    email       :CHAINE
+    
+FINENREGISTREMENT
+
+type voiture = enregistrement
+
+    marque      :typemarque
+    modele      :CHAINE
+    energie     :typeenergie
+    pFiscale    :ENTIER
+    pDYN        :ENTIER
+    couleur     :CHAINE
+    option      :CHAINE
+    millesime   :ENTIER
+    prixNeuf    :ENTIER
+    argus       :ENTIER
+    misecirc    :date
+    age         :ENTIER
+    plaque      :CHAINE
+
+FINENREGISTREMENT
+
+TYPE garage = enregsitrement
+    
+    nom         :CHAINE
+    adresse     :typeadresse
+    capacite    :ENTIER
+    
+FINENREGSITREMENT
+
+FONCTION verifierMarque(input : CHAINE):booleen
+DEBUT
+
+    SI input = kobold OU input = fard OU inout = leo OU input = raiden OU input = generic ALORS
+         verifierMarque <- VRAI
+    SINON
+         verifierMarque <- FAUX
+FINFONCTION
+
+FONCTION chaineToMarque(input : chaine) : marque
+DEBUT
+    CAS input PARMIS
+        kobold: chaineToMarque <- kobold
+        
+        fard: chaineToMarque <- fard
+        
+        leo: chaineToMarque <- leo
+        
+        raiden: chaineToMarque <- raiden
+        
+        generic: chaineToMarque <- generic
+    FINCASPARMIS
+FINFONCTION
+
+FONTION calcArgus(age,prix):ENTIER
+
+VAR
+
+nvPrix  :ENTIER
+
+
+DEBUT
+    
+    SI age = 0 ALORS
+        calcArgus <- prix
+        
+    SI age >= 1 ALORS
+        nvPrix <- prix * 0.75
+        
+    SI age >= 2 ALORS
+        nvPrix <- nvPrix * 0.90
+        
+    SI age >= 3 ALORS
+        nvPrix <- nvPrix * 0.90
+        
+    calcArgus <- nvPrix
+FINFONCTION
+
+
+
+FONCTION inputDate(): date          (ON PEUT LE REMPLACER PAR UN LIBRAIRIE DANS LE LANGUAGE CHOISI.)
+
+VAR
+
+output  :date
+
+DEBUT
+    
+    REPETER
+        ECRIRE "Entrez le jour."
+        LIRE output.jour
+    JUSQU'A output.jour <= 31 ET outpur.jour >= 1
+    
+    REPETER
+        ECRIRE "Entrez le mois."
+        LIRE output.mois
+    JUSQU'A output?mois <= 12 ET output.mois >= 1
+    
+    REPETER
+        ECRIRE "Entrez l'année
+        LIRE output.annee
+    JUSQU'A output.annee <= 9999
+    
+    inputDate <- output
+FINFONCTION
+
+
+FUNCTION creerVoiture(): voiture
+
+VAR
+
+    newVoiture  :voiture
+    inputCh     :CHAINE
+DEBUT
+
+    repeter
+        ECRIRE "Entrez la marque de la voiture."
+        LIRE inputCh
+    jusqu'a verifierMarque(inputCh) = VRAI
+    voiture.marque <- chaineToMarque(inputCh)
+    
+    ECRIRE "Entrez le modele."
+    LIRE voiture.modele
+    
+    ECRIRE "Entrez l'energie utilisee"           (On fera la meme chose que pour la marque, pas faux pour cause de temps.)
+    LIRE voiture.energie
+    
+    ECRIRE "Entrez la puissance fiscale."
+    LIRE voiture.pFiscale
+    
+    ECRIRE "Entrez la puissance DYN."
+    LIRE voiture.pDYN
+    
+    ECRIRE "Entrez la couleur."
+    lire voiture.couleur
+    
+    repeter
+        ECRIRE "Ajoutez une option. Entrez stop pour arreter d'entrer des options."
+        lire inputCh                                                                            (On continue d'ajouter des options et on met # apres.)
+        voiture.option <- voiture.option + inputCh + "#"
+    jusqu'a inputCh = stop
+    
+    ECRIRE "Entrez le millesime."
+    lire voiture.millesime
+    
+    ECRIRE "Entrez le prix du modele."
+    lire voiture.prixNeuf
+    
+    voiture.age <- ANNEE - voiture.millesime
+    
+    voiture.argus <- calcArgus(voiture.age,voiture.prixNeuf)
+    
+    voiture.misecirc <- inputDate()
+    
+    voiture.plaque <- chr(aleatoire(999)) + "-" + chr(aleatoire(99)) + "-" + chr(aleatoire(99))
+    
+    creerVoiture <- voiture
+    
+FINFONCTION
+
+FONCTION inputAdresse(): adresse
+
+VAR
+
+nvAdresse       :adresse
+emailValide,arobase     :booleen
+i               :entier
+
+DEBUT
+
+    ECRIRE "Entrez le numero"
+    LIRE nvAdresse.numero
+    
+    ECRIRE "Entrez la voie"
+    LIRE nvAdresse.voie
+    
+    ECRIRE "Entrez le CP"
+    LIRE nvAdresse.CP
+    
+    ECRIRE "Entrez la ville"
+    LIRE nvAdresse.ville
+    
+    ECRIRE "Entrez le pays"
+    LIRE nvAdresse.pays
+    
+    repeter
+        ECRIRE "Entrez le numero de telephone"
+        LIRE nvAdresse.tel
+    jusqu'a longueur(nvAdresse.tel) = 10
+    
+    repeter
+        ECRIRE "Entrez une adresse email."
+        LIRE nvAdresse.email
+        POUR I := 1 A longueur(nvAdresse.email)
+            SI nvAdresse.email[i] = "@" ALORS
+                arobase <- VRAI
+            SI nvAdresse.email[i] = "." ET nvAdresse.email[i] = "."
+                emailValide <- VRAI
+    jusqu'a emailValide = VRAI
+    
+    inputAdresse <- nvAdresse
+
+FINFONCTION
+
+FONCTION creerGarage(): garage
+
+VAR
+
+nvGarage        :garage
+
+DEBUT
+
+    ECRIRE "Entrez le nom du garage."
+    LIRE garage.nom
+    
+    ECRIRE "Entrez l'adresse"
+    garage.adresse <- inputAdresse()
+
+ENTIER
+
+VAR
+
+    choix,input :ENTIER
+    tabVoiture  :TABLEAU 1 a 100 de voiture
+    tabgarage   :TABLEAU 1 a 10 de garage
+    compteurVoiture :ENTIER <- 1
+    compteurGarage  :ENTIER <- 1
+    coupleGarageVoiture :TABLEAU de 1 a 100 sur 1 a 2 de CHAINE <- 1
+    compteurCouple  :ENTIER <- 1
+
+DEBUT
+
+    repeter
+        ECRIRE "Selectionnez :"
+        ECRIRE "    1.Creer voiture"
+        ECRIRE "    2.Creer garage"
+        ECRIRE "    3.Associer ue voiture a un garage"
+        
+        CAS choix PARMIS
+            1: listVoiture[compteurVoiture] <- creerVoiture()
+               compteurVoiture <- compteurVoiture + 1 
+            
+            2: listGarage[compteurGarage] <- creerGarage()
+               compteurGarage <- compteurGarage +1
+               
+            3:  REPETER
+                    ECRIRE "Entrez une voiture."
+                JUSQU'A input <= compteurVoiture
+                
+                coupleGarageVoiture[compteurCouple,1] <- listVoiture[input].plaque
+                
+                REPETER
+                    ECRIRE "Entrez un garage."
+                JUSQU'A input <= compteurGarage
+                
+
+                coupleGarageVoiture[compteurCouple,2] <- listGarage[input].nom
+               
+        FINCASPARMIS
+    jusqu'a choix = 4
+
+FIN.
